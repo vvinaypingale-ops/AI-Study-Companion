@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Study Companion</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+body{height:100vh;display:flex;justify-content:center;align-items:center;background:radial-gradient(circle at 20% 20%, rgba(255,255,255,0.25), transparent 40%), radial-gradient(circle at 80% 80%, rgba(255,255,255,0.2), transparent 40%), linear-gradient(135deg,#667eea,#764ba2);transition:0.4s;}
+.app{width:95%;height:95vh;display:flex;background:#1e293b;border-radius:15px;overflow:hidden;}
+.sidebar{width:250px;background: #7f1ba6ff;;color:#ffffff;padding:20px;position:relative;transition:0.3s;box-shadow: inset -5px -5px 20px rgba(0,0,0,0.2), inset 5px 5px 20px rgba(255,255,255,0.1);border-radius: 0 15px 15px 0;}
+.sidebar.hide{width:0;padding:0;overflow:hidden;}
+.sidebar li{padding:12px;margin:10px 0;border-radius:12px;cursor:pointer;transition:0.3s;}
+.sidebar li:hover{background: rgba(255,255,255,0.15);transform: translateX(5px);box-shadow: 0 4px 15px rgba(0,0,0,0.2);}
+.account-section{position:absolute;bottom:20px;left:20px;right:20px;}
+.chat-section{flex:1;display:flex;flex-direction:column;}
+.topbar{padding:15px;background:#7f1ba6ff;;color:white;display:flex;justify-content:space-between;align-items:center;}
+.settings-container{ position:relative; }
+.circle{position:absolute;top:0;right:0;width:45px;height:45px;background:#6366f1;border-radius:50%;display:flex;justify-content:center;align-items:center;color:white;transform:scale(0);opacity:0;transition:0.4s;cursor:pointer;}
+.circle.open:nth-child(2){ transform:translate(-70px,-10px) scale(1); opacity:1; }
+.circle.open:nth-child(3){ transform:translate(-50px,50px) scale(1); opacity:1; }
+.circle.open:nth-child(4){ transform:translate(0,80px) scale(1); opacity:1; }
+.chat-box{flex:1;padding:20px;overflow-y:auto;background:#7f1ba67f;}
+.message{max-width:60%;padding:12px;margin:10px 0;border-radius:10px;}
+.user{ background:#6366f1; color:white; margin-left:auto; }
+.bot{ background:#334155; color:white; }
+.chat-input{display:flex;padding:15px;background:#020617;}
+.chat-input input{flex:1;padding:10px;border:none;border-radius:8px;}
+.chat-input button{margin-left:10px;padding:10px;background:#6366f1;border:none;color:white;border-radius:8px;cursor:pointer;}
+body.light{background:linear-gradient(135deg,#e0e7ff,#f8fafc);}
+body.light .app{ background:#f1f5f9; }
+body.light .sidebar{ background:linear-gradient(145deg, #a5b4fc, #818cf8); color:#1e293b; box-shadow: inset -5px -5px 20px rgba(0,0,0,0.1), inset 5px 5px 20px rgba(255,255,255,0.2);}
+body.light .topbar{ background:#ddd6fe; color:#1e293b; }
+body.light .chat-box{ background:#ffffff; }
+body.light .message.bot{ background:#e2e8f0; color:#1e293b; }
+#userPopup{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);background:#1e293b;color:white;padding:20px;border-radius:12px;width:300px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,0.3);transition:0.3s;z-index:1000;}
+#userPopup button{margin-top:15px;padding:8px 15px;border:none;border-radius:8px;background:#6366f1;color:white;cursor:pointer;}
+.quiz-option{display:block;margin:10px 0;padding:10px;border-radius:8px;background: #6366f1;color:white;cursor:pointer;border:none;width:100%;text-align:left;transition:0.3s;}
+.quiz-option:hover{background:#7c3aed;}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="sidebar" id="sidebar">
+    <h2>🧠 Study AI</h2>
+    <label for="courseSelect">📚 Choose Course:</label>
+    <select id="courseSelect" onchange="chooseCourse()" style="width:100%; margin-bottom:15px; padding:8px; border-radius:8px; border:none;">
+        <option value="DBMS">DBMS</option>
+        <option value="OS">OS</option>
+        <option value="DCCN">DCCN</option>
+        <option value="COA">COA</option>
+    </select>
+    <ul>
+        <li onclick="newChat()">➕ New Chat</li>
+        <li>📊 Dashboard</li>
+        <li>📚 Study Plans</li>
+        <li onclick="startQuiz()">🎯 Start Quiz</li>
+    </ul>
+    <div class="account-section">
+        <div id="userNameDisplay">👤 User</div>
+        <button onclick="logout()">Logout</button>
+    </div>
+</div>
+
+<div class="chat-section">
+<div class="topbar">
+    <span onclick="toggleSidebar()">➡</span>
+    <span>Chat</span>
+    <div class="settings-container">
+        <span onclick="toggleSettings()">⚙</span>
+        <div class="circle" onclick="toggleTheme()">🌙</div>
+        <div class="circle" onclick="toggleMute()" id="muteCircle">🔊</div>
+        <div class="circle" onclick="openUserPopup()">👤</div> <!-- FACE ICON OPENS USER DETAILS -->
+    </div>
+</div>
+<div class="chat-box" id="chatBox"></div>
+<div class="chat-input">
+    <input type="text" id="input" placeholder="Say something...">
+    <button onclick="startListening()">🎤</button>
+    <button onclick="sendMessage()">➤</button>
+</div>
+</div>
+</div>
+
+<!-- USER POPUP -->
+<div id="userPopup">
+    <h3>👤 User Details</h3>
+    <p id="popupName">Name: User</p>
+    <p id="popupCourse"></p>
+    <p id="popupCgpa"></p>
+    <p id="popupSemester"></p>
+    <p id="popupGender"></p>
+    <button onclick="closeUserPopup()">Close</button>
+</div>
+
+<script>
+let isMuted = false;
+let currentQuizIndex = 0;
+let score = 0;
+
+const courseQuizzes = {
+    "DBMS":[
+        {question: "What does DBMS stand for?", options:["Database Management System","Data Base Main System","Data Binary Management System","Database Main Storage"], answer:"Database Management System"},
+        {question: "Which is a relational DBMS?", options:["MySQL","MongoDB","Cassandra","Redis"], answer:"MySQL"},
+        {question: "Which SQL command is used to remove data?", options:["DELETE","DROP","REMOVE","TRUNCATE"], answer:"DELETE"},
+        {question: "What is a primary key?", options:["Unique identifier","Password","Foreign key","Table name"], answer:"Unique identifier"},
+        {question: "Which command is used to create a table?", options:["CREATE TABLE","MAKE TABLE","BUILD TABLE","NEW TABLE"], answer:"CREATE TABLE"}    ],
+    "OS":[
+        {question: "Which is a type of OS?", options:["Batch","Linear","Parallel","Sequential"], answer:"Batch"},
+        {question: "What is the main function of OS?", options:["Manage Hardware","Compile Code","Store Emails","Design Webpages"], answer:"Manage Hardware"},
+        {question: "Which OS is open-source?", options:["Linux","Windows","MacOS","Unix"], answer:"Linux"},
+        {question: "What is multitasking?", options:["Running multiple programs simultaneously","Single program execution","Using multiple OS","Running one thread"], answer:"Running multiple programs simultaneously"},
+        {question: "What is virtual memory?", options:["Secondary storage as RAM","CPU register","Disk cache","Swap file"], answer:"Secondary storage as RAM"}
+
+    ],
+    "DCCN":[
+        {question: "Which is a networking device?", options:["Router","Compiler","Debugger","Monitor"], answer:"Router"},
+        {question: "Which protocol is used for emails?", options:["SMTP","HTTP","FTP","SSH"], answer:"SMTP"},
+        {question: "Which layer is responsible for routing?", options:["Network Layer","Transport Layer","Application Layer","Data Link Layer"], answer:"Network Layer"},
+        {question: "IP stands for?", options:["Internet Protocol","Internal Process","Internet Program","Input Protocol"], answer:"Internet Protocol"},
+        {question: "Which topology has a central hub?", options:["Star","Bus","Ring","Mesh"], answer:"Star"}    ],
+    "COA":[
+        {question: "CPU is part of?", options:["Computer Organization","Networking","OS","DBMS"], answer:"Computer Organization"},
+        {question: "What does ALU stand for?", options:["Arithmetic Logic Unit","Advanced Logic Unit","Automated Linear Unit","Algorithmic Logic Unit"], answer:"Arithmetic Logic Unit"},
+        {question: "What is cache memory?", options:["Fast memory","Disk","Register","Main Memory"], answer:"Fast memory"},
+        {question: "Registers are used for?", options:["Temporary storage","Permanent storage","Input/Output","Networking"], answer:"Temporary storage"},
+        {question: "Pipelining helps to?", options:["Increase CPU efficiency","Decrease CPU speed","Store data","Manage files"], answer:"Increase CPU efficiency"}
+    ]
+};
+
+// CHAT, QUIZ, USER FUNCTIONS
+function toggleMute(){isMuted=!isMuted; document.getElementById("muteCircle").innerText = isMuted?"🔇":"🔊";}
+function toggleTheme(){document.body.classList.toggle("light");}
+function toggleSidebar(){document.getElementById("sidebar").classList.toggle("hide");}
+function toggleSettings(){document.querySelectorAll(".circle").forEach(c=>c.classList.toggle("open"));}
+function startListening(){const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;if(!SpeechRecognition){alert("Voice not supported");return;}const recognition = new SpeechRecognition();recognition.lang="en-US";recognition.onresult=(e)=>{document.getElementById("input").value=e.results[0][0].transcript;sendMessage();};recognition.start();}
+function speak(text){if(isMuted) return;if(!window.speechSynthesis)return; window.speechSynthesis.cancel(); const speech=new SpeechSynthesisUtterance(text);speech.lang="en-US";window.speechSynthesis.speak(speech);}
+function loadUser(){let u=localStorage.getItem("username")||"User";document.getElementById("userNameDisplay").innerText="👤 "+u;}
+function greetUser(){let u=localStorage.getItem("username")||"User"; let chat=document.getElementById("chatBox"); let hour=new Date().getHours(); let greeting=""; if(hour<12) greeting="Good Morning ☀️"; else if(hour<17) greeting="Good Afternoon 🌤️"; else if(hour<21) greeting="Good Evening 🌙"; else greeting="Good Night 🌌"; let msg=`${greeting}, ${u}! 👋 I'm your AI Study Companion.`; let b=document.createElement("div"); b.className="message bot"; b.innerText=msg; chat.appendChild(b); speak(msg);}
+function newChat(){document.getElementById("chatBox").innerHTML="";greetUser();}
+function sendMessage(){let input=document.getElementById("input"); let text=input.value.trim(); if(text==="")return; let chat=document.getElementById("chatBox"); let u=document.createElement("div"); u.className="message user"; u.innerText=text; chat.appendChild(u); input.value=""; let reply="🤖 I'm thinking..."; setTimeout(()=>{let b=document.createElement("div");b.className="message bot";b.innerText=reply; chat.appendChild(b); speak(reply); chat.scrollTop=chat.scrollHeight;},500);}
+function logout(){localStorage.clear();window.location.href="login.html";}
+document.getElementById("input").addEventListener("keypress", function(e){if(e.key==="Enter"){sendMessage();}});
+
+function chooseCourse(){const c=document.getElementById("courseSelect").value; localStorage.setItem("course", c);}
+
+// QUIZ
+function startQuiz(){const course=localStorage.getItem("course")||"DBMS"; const q=courseQuizzes[course]; currentQuizIndex=0; score=0; showQuizQuestion(q);}
+function showQuizQuestion(q){const chat=document.getElementById("chatBox"); chat.innerHTML=""; if(currentQuizIndex<q.length){const quest=q[currentQuizIndex]; const div=document.createElement("div"); div.className="message bot"; div.innerText=`🎯 Q${currentQuizIndex+1}: ${quest.question}`; chat.appendChild(div); quest.options.forEach(opt=>{const btn=document.createElement("button");btn.className="quiz-option";btn.innerText=opt; btn.onclick=()=>checkAnswer(opt,q); chat.appendChild(btn);}); chat.scrollTop=chat.scrollHeight;} else {const div=document.createElement("div"); div.className="message bot"; div.innerText=`✅ Quiz finished! Your score: ${score} / ${q.length}`; chat.appendChild(div); const r=document.createElement("button"); r.className="quiz-option"; r.innerText="Restart Quiz"; r.onclick=startQuiz; chat.appendChild(r);}}
+function checkAnswer(s,q){if(s===q[currentQuizIndex].answer) score++; currentQuizIndex++; showQuizQuestion(q);}
+
+// USER POPUP
+function openUserPopup(){
+    const username=localStorage.getItem("username")||"User";
+    document.getElementById("popupName").innerText="Name: "+username;
+    document.getElementById("popupCourse").innerText="Course: "+(localStorage.getItem("course")||"N/A");
+    document.getElementById("popupCgpa").innerText="CGPA: "+(localStorage.getItem("cgpa")||"N/A");
+    document.getElementById("popupSemester").innerText="Semester: "+(localStorage.getItem("semester")||"N/A");
+    document.getElementById("popupGender").innerText="Gender: "+(localStorage.getItem("gender")||"N/A");
+    document.getElementById("userPopup").style.transform="translate(-50%,-50%) scale(1)";
+}
+function closeUserPopup(){document.getElementById("userPopup").style.transform="translate(-50%,-50%) scale(0)";}
+
+window.onload=()=>{loadUser(); greetUser(); document.getElementById("courseSelect").value=localStorage.getItem("course")||"DBMS";}
+</script>
+</body>
+</html>
