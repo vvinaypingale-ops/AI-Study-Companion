@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Profile Setup</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+        align-items: flex-start;
+    }
+
+    .container {
+        width: 100%;
+        padding: 20px;
+        border-radius: 15px;
+    }
+
+    .container h1 {
+        font-size: 20px;
+    }
+
+    .container p {
+        font-size: 12px;
+    }
+
+    /* Stack inputs vertically */
+    .form-group {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    button {
+        font-size: 15px;
+        padding: 14px;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        width: 90%;
+    }
+}
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins', sans-serif;
+}
+
+body{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#0f1221;
+}
+
+/* Container */
+.container{
+    width:380px;
+    padding:30px;
+    border-radius:20px;
+    background:linear-gradient(145deg,#1a1d35,#12142a);
+    box-shadow:0 10px 40px rgba(0,0,0,0.5);
+    color:white;
+}
+
+/* Title */
+.container h1{
+    font-size:24px;
+    margin-bottom:5px;
+}
+
+.container p{
+    font-size:13px;
+    color:#aaa;
+    margin-bottom:20px;
+}
+
+/* Form */
+.form-group{
+    display:flex;
+    gap:10px;
+    margin-bottom:15px;
+    width:100%;
+}
+
+.input-box{
+    flex:1;
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+}
+
+label{
+    font-size:12px;
+    margin-bottom:5px;
+    color:#bbb;
+}
+
+/* Inputs + Dropdown */
+input, select{
+    width:100%;
+    padding:12px;
+    border-radius:10px;
+    border:none;
+    outline:none;
+    background:#1e2140;
+    color:white;
+    font-size:14px;
+    box-sizing:border-box;
+}
+
+input::placeholder{
+    color:#777;
+}
+
+/* Full width */
+.full{
+    margin-bottom:15px;
+}
+
+/* Button */
+button{
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:12px;
+    background:#a8f03c;
+    color:#111;
+    font-weight:600;
+    font-size:16px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    transform:scale(1.05);
+}
+</style>
+
+</head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<body>
+
+<div class="container">
+    <h1>Create your profile</h1>
+    <p>One-time setup. Everything is remembered after this.</p>
+
+    <div class="form-group">
+        <div class="input-box">
+            <label>Your Name *</label>
+            <input id="name" type="text" placeholder="e.g. Arjun">
+        </div>
+        <div class="input-box">
+            <label>Semester *</label>
+            <input id="semester" type="number" placeholder="e.g. 4">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="input-box">
+            <label>Course *</label>
+            <input id="course" type="text" placeholder="e.g. B.Tech">
+        </div>
+        <div class="input-box">
+            <label>Current CGPA *</label>
+            <input id="cgpa" type="text" placeholder="7.5">
+        </div>
+    </div>
+
+    <div class="input-box full">
+        <label>Subjects (comma separated) *</label>
+        <input id="subjects" type="text" placeholder="e.g. DBMS, OS, CN, DSA, Math">
+    </div>
+
+    <div class="form-group">
+        <div class="input-box">
+            <label>Target CGPA *</label>
+            <input id="target" type="text" placeholder="9.0">
+        </div>
+        <div class="input-box">
+            <label>Next Exam Date *</label>
+            <input id="examDate" type="date">
+        </div>
+    </div>
+
+    <!-- ✅ DROPDOWN ADDED -->
+    <div class="input-box full">
+        <label>Exam Name *</label>
+        <select id="examName">
+            <option value="">-- Select Exam Type --</option>
+            <option value="Finals">Finals</option>
+            <option value="Midterm">Midterm</option>
+            <option value="Assessment">Assessment Exams</option>
+            <option value="Competitive">Competitive Exams</option>
+        </select>
+    </div>
+
+    <button onclick="goToChat()">Start Learning →</button>
+</div>
+
+<script>
+function goToChat() {
+
+    let name = document.getElementById("name").value.trim();
+    let semester = document.getElementById("semester").value.trim();
+    let course = document.getElementById("course").value.trim();
+    let cgpa = document.getElementById("cgpa").value.trim();
+    let subjects = document.getElementById("subjects").value.trim();
+    let target = document.getElementById("target").value.trim();
+    let examDate = document.getElementById("examDate").value;
+    let examName = document.getElementById("examName").value;
+
+    // Validation
+    if (
+        name === "" ||
+        semester === "" ||
+        course === "" ||
+        cgpa === "" ||
+        subjects === "" ||
+        target === "" ||
+        examDate === "" ||
+        examName === ""
+    ) {
+        alert("⚠️ Please fill all fields before continuing!");
+        return;
+    }
+
+    // Save data
+    localStorage.setItem("username", name);
+    localStorage.setItem("subjects", subjects);
+    localStorage.setItem("course", course);
+    localStorage.setItem("cgpa", cgpa);
+    localStorage.setItem("examType", examName);
+
+    // Redirect to AI page
+    window.location.href = "final.html";
+}
+</script>
+
+</body>
+</html>
