@@ -3,168 +3,1494 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Study Companion</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<title>EduMind Pro — AI Study Companion</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
-body{height:100vh;display:flex;justify-content:center;align-items:center;background:radial-gradient(circle at 20% 20%, rgba(255,255,255,0.25), transparent 40%), radial-gradient(circle at 80% 80%, rgba(255,255,255,0.2), transparent 40%), linear-gradient(135deg,#667eea,#764ba2);transition:0.4s;}
-.app{width:95%;height:95vh;display:flex;background:#1e293b;border-radius:15px;overflow:hidden;}
-.sidebar{width:250px;background: #7f1ba6ff;;color:#ffffff;padding:20px;position:relative;transition:0.3s;box-shadow: inset -5px -5px 20px rgba(0,0,0,0.2), inset 5px 5px 20px rgba(255,255,255,0.1);border-radius: 0 15px 15px 0;}
-.sidebar.hide{width:0;padding:0;overflow:hidden;}
-.sidebar li{padding:12px;margin:10px 0;border-radius:12px;cursor:pointer;transition:0.3s;}
-.sidebar li:hover{background: rgba(255,255,255,0.15);transform: translateX(5px);box-shadow: 0 4px 15px rgba(0,0,0,0.2);}
-.account-section{position:absolute;bottom:20px;left:20px;right:20px;}
-.chat-section{flex:1;display:flex;flex-direction:column;}
-.topbar{padding:15px;background:#7f1ba6ff;;color:white;display:flex;justify-content:space-between;align-items:center;}
-.settings-container{ position:relative; }
-.circle{position:absolute;top:0;right:0;width:45px;height:45px;background:#6366f1;border-radius:50%;display:flex;justify-content:center;align-items:center;color:white;transform:scale(0);opacity:0;transition:0.4s;cursor:pointer;}
-.circle.open:nth-child(2){ transform:translate(-70px,-10px) scale(1); opacity:1; }
-.circle.open:nth-child(3){ transform:translate(-50px,50px) scale(1); opacity:1; }
-.circle.open:nth-child(4){ transform:translate(0,80px) scale(1); opacity:1; }
-.chat-box{flex:1;padding:20px;overflow-y:auto;background:#7f1ba67f;}
-.message{max-width:60%;padding:12px;margin:10px 0;border-radius:10px;}
-.user{ background:#6366f1; color:white; margin-left:auto; }
-.bot{ background:#334155; color:white; }
-.chat-input{display:flex;padding:15px;background:#020617;}
-.chat-input input{flex:1;padding:10px;border:none;border-radius:8px;}
-.chat-input button{margin-left:10px;padding:10px;background:#6366f1;border:none;color:white;border-radius:8px;cursor:pointer;}
-body.light{background:linear-gradient(135deg,#e0e7ff,#f8fafc);}
-body.light .app{ background:#f1f5f9; }
-body.light .sidebar{ background:linear-gradient(145deg, #a5b4fc, #818cf8); color:#1e293b; box-shadow: inset -5px -5px 20px rgba(0,0,0,0.1), inset 5px 5px 20px rgba(255,255,255,0.2);}
-body.light .topbar{ background:#ddd6fe; color:#1e293b; }
-body.light .chat-box{ background:#ffffff; }
-body.light .message.bot{ background:#e2e8f0; color:#1e293b; }
-#userPopup{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);background:#1e293b;color:white;padding:20px;border-radius:12px;width:300px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,0.3);transition:0.3s;z-index:1000;}
-#userPopup button{margin-top:15px;padding:8px 15px;border:none;border-radius:8px;background:#6366f1;color:white;cursor:pointer;}
-.quiz-option{display:block;margin:10px 0;padding:10px;border-radius:8px;background: #6366f1;color:white;cursor:pointer;border:none;width:100%;text-align:left;transition:0.3s;}
-.quiz-option:hover{background:#7c3aed;}
+:root {
+    --bg-gradient: radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.2), transparent 45%),
+                    radial-gradient(circle at 90% 80%, rgba(168, 85, 247, 0.2), transparent 45%),
+                    #0b0f19;
+    --app-bg: rgba(15, 23, 42, 0.85);
+    --sidebar-bg: #111827;
+    --sidebar-border: rgba(255, 255, 255, 0.08);
+    --topbar-bg: rgba(17, 24, 39, 0.95);
+    --chat-bg: #0f172a;
+    --bot-msg-bg: #1e293b;
+    --bot-msg-text: #f1f5f9;
+    --user-msg-bg: linear-gradient(135deg, #6366f1, #8b5cf6);
+    --user-msg-text: #ffffff;
+    --accent: #6366f1;
+    --accent-hover: #4f46e5;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --card-border: rgba(255, 255, 255, 0.08);
+    --modal-bg: rgba(17, 24, 39, 0.95);
+}
+
+body.light {
+    --bg-gradient: radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.15), transparent 45%),
+                    linear-gradient(135deg, #e2e8f0, #f8fafc);
+    --app-bg: #ffffff;
+    --sidebar-bg: #f8fafc;
+    --sidebar-border: #e2e8f0;
+    --topbar-bg: #ffffff;
+    --chat-bg: #f1f5f9;
+    --bot-msg-bg: #ffffff;
+    --bot-msg-text: #1e293b;
+    --user-msg-bg: linear-gradient(135deg, #6366f1, #4f46e5);
+    --user-msg-text: #ffffff;
+    --accent: #6366f1;
+    --accent-hover: #4338ca;
+    --text-primary: #0f172a;
+    --text-secondary: #64748b;
+    --card-border: #e2e8f0;
+    --modal-bg: rgba(255, 255, 255, 0.98);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Outfit', sans-serif;
+}
+
+body {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--bg-gradient);
+    color: var(--text-primary);
+    overflow: hidden;
+    transition: background 0.3s ease;
+}
+
+.app {
+    width: 96%;
+    height: 94vh;
+    display: flex;
+    background: var(--app-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    position: relative;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 280px;
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--sidebar-border);
+    display: flex;
+    flex-direction: column;
+    padding: 24px 18px;
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.sidebar.hide {
+    width: 0;
+    padding: 0;
+    overflow: hidden;
+    border-right: none;
+}
+
+.brand-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 22px;
+}
+
+.brand-section .logo-icon {
+    font-size: 28px;
+    filter: drop-shadow(0 0 10px rgba(99, 102, 241, 0.6));
+}
+
+.brand-section h2 {
+    font-size: 20px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #a5b4fc, #c084fc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.course-box {
+    margin-bottom: 20px;
+}
+
+.course-box label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-secondary);
+    display: block;
+    margin-bottom: 6px;
+}
+
+.course-box select {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--sidebar-border);
+    color: var(--text-primary);
+    font-size: 13px;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.course-box select:focus {
+    border-color: var(--accent);
+}
+
+.sidebar-menu {
+    list-style: none;
+    flex: 1;
+    overflow-y: auto;
+}
+
+.sidebar-menu li {
+    padding: 12px 14px;
+    margin-bottom: 6px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.2s ease;
+}
+
+.sidebar-menu li:hover {
+    background: rgba(99, 102, 241, 0.12);
+    color: var(--text-primary);
+    transform: translateX(4px);
+}
+
+.sidebar-menu li.active {
+    background: var(--accent);
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+}
+
+.sidebar-menu li .menu-icon {
+    font-size: 18px;
+}
+
+.account-section {
+    padding-top: 15px;
+    border-top: 1px solid var(--sidebar-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.user-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #6366f1, #a855f7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: white;
+    font-size: 14px;
+}
+
+.user-details h4 {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.user-details span {
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+
+.logout-btn {
+    background: transparent;
+    border: none;
+    color: #ef4444;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 6px;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+.logout-btn:hover {
+    background: rgba(239, 68, 68, 0.15);
+}
+
+/* CHAT SECTION */
+.chat-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--chat-bg);
+}
+
+.topbar {
+    padding: 14px 22px;
+    background: var(--topbar-bg);
+    border-bottom: 1px solid var(--sidebar-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.toggle-sidebar-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--sidebar-border);
+    color: var(--text-primary);
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.toggle-sidebar-btn:hover {
+    background: var(--accent);
+    color: white;
+}
+
+.topbar-title {
+    font-size: 16px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.topbar-badge {
+    background: rgba(99, 102, 241, 0.15);
+    color: #818cf8;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.icon-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--sidebar-border);
+    color: var(--text-primary);
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 16px;
+}
+
+.icon-btn:hover {
+    background: var(--accent);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.chat-box {
+    flex: 1;
+    padding: 24px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.message-wrapper {
+    display: flex;
+    gap: 12px;
+    max-width: 80%;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.message-wrapper.user {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+}
+
+.message-wrapper.bot {
+    align-self: flex-start;
+}
+
+.msg-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.message-wrapper.bot .msg-avatar {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white;
+}
+
+.message-wrapper.user .msg-avatar {
+    background: #3b82f6;
+    color: white;
+}
+
+.message-bubble {
+    padding: 14px 18px;
+    border-radius: 16px;
+    font-size: 14px;
+    line-height: 1.6;
+    word-break: break-word;
+}
+
+.message-wrapper.user .message-bubble {
+    background: var(--user-msg-bg);
+    color: var(--user-msg-text);
+    border-top-right-radius: 4px;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+}
+
+.message-wrapper.bot .message-bubble {
+    background: var(--bot-msg-bg);
+    color: var(--bot-msg-text);
+    border-top-left-radius: 4px;
+    border: 1px solid var(--sidebar-border);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.message-bubble p {
+    margin-bottom: 8px;
+}
+
+.message-bubble p:last-child {
+    margin-bottom: 0;
+}
+
+.message-bubble strong {
+    color: #818cf8;
+}
+
+.message-bubble pre {
+    background: #020617;
+    padding: 12px;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-family: monospace;
+    font-size: 12px;
+    margin: 8px 0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.citations-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    padding: 4px 10px;
+    background: rgba(99, 102, 241, 0.15);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: 8px;
+    font-size: 11px;
+    color: #a5b4fc;
+}
+
+/* Typing Indicator */
+.typing-indicator {
+    display: flex;
+    gap: 5px;
+    padding: 10px 14px;
+    background: var(--bot-msg-bg);
+    border-radius: 12px;
+    width: fit-content;
+    align-self: flex-start;
+    border: 1px solid var(--sidebar-border);
+}
+
+.typing-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #818cf8;
+    animation: bounce 1.4s infinite ease-in-out both;
+}
+
+.typing-dot:nth-child(1) { animation-delay: -0.32s; }
+.typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes bounce {
+    0%, 80%, 100% { transform: scale(0); }
+    40% { transform: scale(1); }
+}
+
+/* CHAT INPUT */
+.chat-input-bar {
+    padding: 18px 24px;
+    background: var(--topbar-bg);
+    border-top: 1px solid var(--sidebar-border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.chat-input-wrapper {
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.chat-input-wrapper input {
+    width: 100%;
+    padding: 14px 45px 14px 18px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--sidebar-border);
+    color: var(--text-primary);
+    font-size: 14px;
+    outline: none;
+    transition: all 0.2s;
+}
+
+.chat-input-wrapper input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+.mic-btn {
+    position: absolute;
+    right: 12px;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.mic-btn:hover, .mic-btn.listening {
+    color: #ef4444;
+    transform: scale(1.15);
+}
+
+.send-btn {
+    padding: 14px 22px;
+    border-radius: 14px;
+    background: var(--user-msg-bg);
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.35);
+    transition: all 0.2s;
+}
+
+.send-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+}
+
+/* QUIZ STYLES */
+.quiz-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--sidebar-border);
+    border-radius: 16px;
+    padding: 20px;
+    margin: 12px 0;
+    max-width: 650px;
+}
+
+.quiz-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.quiz-question {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: var(--text-primary);
+}
+
+.quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.quiz-opt-btn {
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--sidebar-border);
+    border-radius: 10px;
+    color: var(--text-primary);
+    text-align: left;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.quiz-opt-btn:hover:not(:disabled) {
+    background: rgba(99, 102, 241, 0.15);
+    border-color: var(--accent);
+    transform: translateX(4px);
+}
+
+.quiz-opt-btn.correct {
+    background: rgba(34, 197, 94, 0.2);
+    border-color: #22c55e;
+    color: #86efac;
+    font-weight: 600;
+}
+
+.quiz-opt-btn.incorrect {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: #ef4444;
+    color: #fca5a5;
+}
+
+.quiz-explanation {
+    margin-top: 14px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: rgba(99, 102, 241, 0.1);
+    border-left: 3px solid var(--accent);
+    font-size: 13px;
+    color: #cbd5e1;
+}
+
+/* MODALS */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.25s ease;
+    z-index: 1000;
+}
+
+.modal-overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-content {
+    background: var(--modal-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 28px;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+    transform: scale(0.95);
+    transition: all 0.25s ease;
+}
+
+.modal-overlay.open .modal-content {
+    transform: scale(1);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--sidebar-border);
+}
+
+.modal-header h3 {
+    font-size: 18px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.modal-close {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.modal-close:hover {
+    color: var(--text-primary);
+}
+
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.stat-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--sidebar-border);
+    border-radius: 12px;
+    padding: 14px;
+    text-align: center;
+}
+
+.stat-card .val {
+    font-size: 22px;
+    font-weight: 700;
+    color: #818cf8;
+}
+
+.stat-card .lbl {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+    text-transform: uppercase;
+}
+
+/* Plan Day Card */
+.plan-day {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--sidebar-border);
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 12px;
+}
+
+.plan-day-header {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 8px;
+    color: #a5b4fc;
+}
+
+.plan-task {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 0;
+    font-size: 13px;
+    color: var(--text-primary);
+}
+
+/* Drag drop area */
+.drop-zone {
+    border: 2px dashed rgba(99, 102, 241, 0.4);
+    border-radius: 14px;
+    padding: 30px;
+    text-align: center;
+    background: rgba(99, 102, 241, 0.05);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.drop-zone:hover {
+    border-color: var(--accent);
+    background: rgba(99, 102, 241, 0.1);
+}
+
+@media (max-width: 768px) {
+    .app { width: 100%; height: 100vh; border-radius: 0; }
+    .sidebar { position: absolute; left: 0; top: 0; bottom: 0; z-index: 100; box-shadow: 5px 0 25px rgba(0,0,0,0.5); }
+    .message-wrapper { max-width: 90%; }
+}
 </style>
 </head>
 <body>
+
 <div class="app">
-<div class="sidebar" id="sidebar">
-    <h2>🧠 Study AI</h2>
-    <label for="courseSelect">📚 Choose Course:</label>
-    <select id="courseSelect" onchange="chooseCourse()" style="width:100%; margin-bottom:15px; padding:8px; border-radius:8px; border:none;">
-        <option value="DBMS">DBMS</option>
-        <option value="OS">OS</option>
-        <option value="DCCN">DCCN</option>
-        <option value="COA">COA</option>
-    </select>
-    <ul>
-        <li onclick="newChat()">➕ New Chat</li>
-        <li>📊 Dashboard</li>
-        <li>📚 Study Plans</li>
-        <li onclick="startQuiz()">🎯 Start Quiz</li>
-    </ul>
-    <div class="account-section">
-        <div id="userNameDisplay">👤 User</div>
-        <button onclick="logout()">Logout</button>
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+        <div class="brand-section">
+            <div class="logo-icon">🧠</div>
+            <h2>EduMind Pro</h2>
+        </div>
+
+        <div class="course-box">
+            <label for="courseSelect">Active Subject / Course</label>
+            <select id="courseSelect" onchange="changeCourse()">
+                <option value="DBMS">Database Management (DBMS)</option>
+                <option value="OS">Operating Systems (OS)</option>
+                <option value="DCCN">Data Comm & Networking (DCCN)</option>
+                <option value="COA">Computer Organization (COA)</option>
+            </select>
+        </div>
+
+        <ul class="sidebar-menu">
+            <li class="active" onclick="newChat()"><span class="menu-icon">💬</span> AI Tutor Chat</li>
+            <li onclick="startAIQuiz()"><span class="menu-icon">🎯</span> Practice Quiz</li>
+            <li onclick="openDashboard()"><span class="menu-icon">📊</span> Progress & Stats</li>
+            <li onclick="openStudyPlan()"><span class="menu-icon">📅</span> 7-Day Study Plan</li>
+            <li onclick="openUploadModal()"><span class="menu-icon">📄</span> Upload Notes (RAG)</li>
+            <li onclick="openMistakesModal()"><span class="menu-icon">⚠️</span> Mistake Log</li>
+        </ul>
+
+        <div class="account-section">
+            <div class="user-info" onclick="openProfileModal()">
+                <div class="user-avatar" id="avatarInitial">U</div>
+                <div class="user-details">
+                    <h4 id="userNameDisplay">Student</h4>
+                    <span id="userCourseDisplay">B.Tech</span>
+                </div>
+            </div>
+            <button class="logout-btn" title="Logout" onclick="logout()">🚪</button>
+        </div>
+    </div>
+
+    <!-- MAIN CHAT SECTION -->
+    <div class="chat-section">
+        <div class="topbar">
+            <div class="topbar-left">
+                <button class="toggle-sidebar-btn" onclick="toggleSidebar()" title="Toggle Sidebar">☰</button>
+                <div class="topbar-title">
+                    <span id="activeTopicHeader">AI Tutor</span>
+                    <span class="topbar-badge" id="examBadge">Exam Prep</span>
+                </div>
+            </div>
+
+            <div class="topbar-right">
+                <button class="icon-btn" onclick="toggleTheme()" title="Toggle Theme" id="themeBtn">🌙</button>
+                <button class="icon-btn" onclick="toggleMute()" title="Toggle Voice Audio" id="muteBtn">🔊</button>
+                <button class="icon-btn" onclick="openProfileModal()" title="View Profile">👤</button>
+            </div>
+        </div>
+
+        <div class="chat-box" id="chatBox">
+            <!-- Messages populated dynamically -->
+        </div>
+
+        <div class="chat-input-bar">
+            <div class="chat-input-wrapper">
+                <input type="text" id="userInput" placeholder="Ask your AI tutor anything about DBMS, OS, algorithms, or your notes..." onkeydown="handleInputKey(event)">
+                <button class="mic-btn" id="micBtn" onclick="toggleVoiceInput()" title="Voice input">🎤</button>
+            </div>
+            <button class="send-btn" onclick="sendMessage()">Send ➤</button>
+        </div>
     </div>
 </div>
 
-<div class="chat-section">
-<div class="topbar">
-    <span onclick="toggleSidebar()">➡</span>
-    <span>Chat</span>
-    <div class="settings-container">
-        <span onclick="toggleSettings()">⚙</span>
-        <div class="circle" onclick="toggleTheme()">🌙</div>
-        <div class="circle" onclick="toggleMute()" id="muteCircle">🔊</div>
-        <div class="circle" onclick="openUserPopup()">👤</div> <!-- FACE ICON OPENS USER DETAILS -->
+<!-- DASHBOARD MODAL -->
+<div class="modal-overlay" id="dashboardModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>📊 Study Progress Dashboard</h3>
+            <button class="modal-close" onclick="closeModal('dashboardModal')">✕</button>
+        </div>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="val" id="statScore">0%</div>
+                <div class="lbl">Average Score</div>
+            </div>
+            <div class="stat-card">
+                <div class="val" id="statStreak">0 🔥</div>
+                <div class="lbl">Study Streak</div>
+            </div>
+            <div class="stat-card">
+                <div class="val" id="statQuizzes">0</div>
+                <div class="lbl">Quizzes Completed</div>
+            </div>
+            <div class="stat-card">
+                <div class="val" id="statExamDays">--</div>
+                <div class="lbl">Days to Exam</div>
+            </div>
+        </div>
+        <h4 style="font-size: 14px; margin-bottom: 10px; color: #a5b4fc;">Weak Areas & Recommendations</h4>
+        <div id="recommendationsList" style="font-size: 13px; color: var(--text-secondary); line-height: 1.6;">
+            Loading recommendations...
+        </div>
     </div>
 </div>
-<div class="chat-box" id="chatBox"></div>
-<div class="chat-input">
-    <input type="text" id="input" placeholder="Say something...">
-    <button onclick="startListening()">🎤</button>
-    <button onclick="sendMessage()">➤</button>
-</div>
-</div>
+
+<!-- STUDY PLAN MODAL -->
+<div class="modal-overlay" id="studyPlanModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>📅 7-Day Personalized Study Schedule</h3>
+            <button class="modal-close" onclick="closeModal('studyPlanModal')">✕</button>
+        </div>
+        <div id="planContent">Loading AI plan...</div>
+    </div>
 </div>
 
-<!-- USER POPUP -->
-<div id="userPopup">
-    <h3>👤 User Details</h3>
-    <p id="popupName">Name: User</p>
-    <p id="popupCourse"></p>
-    <p id="popupCgpa"></p>
-    <p id="popupSemester"></p>
-    <p id="popupGender"></p>
-    <button onclick="closeUserPopup()">Close</button>
+<!-- UPLOAD NOTES MODAL -->
+<div class="modal-overlay" id="uploadModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>📄 Upload Notes to RAG Vector Store</h3>
+            <button class="modal-close" onclick="closeModal('uploadModal')">✕</button>
+        </div>
+        <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">
+            Upload your class notes, textbooks, or syllabus files (PDF, DOCX, TXT). EduMind will chunk, embed, and cite them during your study sessions!
+        </p>
+        <div class="drop-zone" onclick="document.getElementById('fileInput').click()">
+            <div style="font-size: 32px; margin-bottom: 8px;">📁</div>
+            <div style="font-size: 14px; font-weight: 600;">Click to browse or drop your notes here</div>
+            <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">Supports PDF, DOCX, TXT, MD (Max 20MB)</div>
+            <input type="file" id="fileInput" style="display: none;" accept=".pdf,.docx,.doc,.txt,.md" onchange="handleFileUpload(event)">
+        </div>
+        <div id="uploadStatus" style="margin-top: 14px; font-size: 13px; display: none;"></div>
+    </div>
+</div>
+
+<!-- MISTAKES MODAL -->
+<div class="modal-overlay" id="mistakesModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>⚠️ Mistakes Revision Log</h3>
+            <button class="modal-close" onclick="closeModal('mistakesModal')">✕</button>
+        </div>
+        <div id="mistakesList" style="margin-bottom: 16px;">Loading logged mistakes...</div>
+        <button class="send-btn" style="width: 100%;" onclick="reviseMistakesWithAI()">🧠 Ask AI to Explain All Mistakes</button>
+    </div>
+</div>
+
+<!-- PROFILE MODAL -->
+<div class="modal-overlay" id="profileModal">
+    <div class="modal-content" style="max-width: 420px; text-align: center;">
+        <div class="modal-header">
+            <h3>👤 Student Profile</h3>
+            <button class="modal-close" onclick="closeModal('profileModal')">✕</button>
+        </div>
+        <div class="user-avatar" style="width: 64px; height: 64px; margin: 0 auto 16px; font-size: 24px;" id="profileModalAvatar">S</div>
+        <h3 id="profName" style="margin-bottom: 4px;">Student</h3>
+        <p id="profCourse" style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">Course Details</p>
+        <div class="stats-grid" style="grid-template-columns: 1fr 1fr; margin-bottom: 20px;">
+            <div class="stat-card">
+                <div class="val" id="profCgpa">7.5</div>
+                <div class="lbl">Current CGPA</div>
+            </div>
+            <div class="stat-card">
+                <div class="val" id="profTarget">9.0</div>
+                <div class="lbl">Target CGPA</div>
+            </div>
+        </div>
+        <div style="font-size: 13px; text-align: left; background: rgba(255,255,255,0.03); padding: 14px; border-radius: 12px; margin-bottom: 16px;">
+            <p><strong>Semester:</strong> <span id="profSem">4</span></p>
+            <p style="margin-top: 6px;"><strong>Next Exam:</strong> <span id="profExam">Finals</span></p>
+            <p style="margin-top: 6px;"><strong>Subjects:</strong> <span id="profSubjects">DBMS, OS, DCCN, COA</span></p>
+        </div>
+        <button class="send-btn" style="width: 100%; background: #475569;" onclick="closeModal('profileModal')">Close</button>
+    </div>
 </div>
 
 <script>
 let isMuted = false;
+let currentSessionId = null;
+let currentQuiz = null;
 let currentQuizIndex = 0;
-let score = 0;
+let userQuizScore = 0;
+let recognition = null;
+let isListening = false;
 
-const courseQuizzes = {
-    "DBMS":[
-        {question: "What does DBMS stand for?", options:["Database Management System","Data Base Main System","Data Binary Management System","Database Main Storage"], answer:"Database Management System"},
-        {question: "Which is a relational DBMS?", options:["MySQL","MongoDB","Cassandra","Redis"], answer:"MySQL"},
-        {question: "Which SQL command is used to remove data?", options:["DELETE","DROP","REMOVE","TRUNCATE"], answer:"DELETE"},
-        {question: "What is a primary key?", options:["Unique identifier","Password","Foreign key","Table name"], answer:"Unique identifier"},
-        {question: "Which command is used to create a table?", options:["CREATE TABLE","MAKE TABLE","BUILD TABLE","NEW TABLE"], answer:"CREATE TABLE"}    ],
-    "OS":[
-        {question: "Which is a type of OS?", options:["Batch","Linear","Parallel","Sequential"], answer:"Batch"},
-        {question: "What is the main function of OS?", options:["Manage Hardware","Compile Code","Store Emails","Design Webpages"], answer:"Manage Hardware"},
-        {question: "Which OS is open-source?", options:["Linux","Windows","MacOS","Unix"], answer:"Linux"},
-        {question: "What is multitasking?", options:["Running multiple programs simultaneously","Single program execution","Using multiple OS","Running one thread"], answer:"Running multiple programs simultaneously"},
-        {question: "What is virtual memory?", options:["Secondary storage as RAM","CPU register","Disk cache","Swap file"], answer:"Secondary storage as RAM"}
-
-    ],
-    "DCCN":[
-        {question: "Which is a networking device?", options:["Router","Compiler","Debugger","Monitor"], answer:"Router"},
-        {question: "Which protocol is used for emails?", options:["SMTP","HTTP","FTP","SSH"], answer:"SMTP"},
-        {question: "Which layer is responsible for routing?", options:["Network Layer","Transport Layer","Application Layer","Data Link Layer"], answer:"Network Layer"},
-        {question: "IP stands for?", options:["Internet Protocol","Internal Process","Internet Program","Input Protocol"], answer:"Internet Protocol"},
-        {question: "Which topology has a central hub?", options:["Star","Bus","Ring","Mesh"], answer:"Star"}    ],
-    "COA":[
-        {question: "CPU is part of?", options:["Computer Organization","Networking","OS","DBMS"], answer:"Computer Organization"},
-        {question: "What does ALU stand for?", options:["Arithmetic Logic Unit","Advanced Logic Unit","Automated Linear Unit","Algorithmic Logic Unit"], answer:"Arithmetic Logic Unit"},
-        {question: "What is cache memory?", options:["Fast memory","Disk","Register","Main Memory"], answer:"Fast memory"},
-        {question: "Registers are used for?", options:["Temporary storage","Permanent storage","Input/Output","Networking"], answer:"Temporary storage"},
-        {question: "Pipelining helps to?", options:["Increase CPU efficiency","Decrease CPU speed","Store data","Manage files"], answer:"Increase CPU efficiency"}
-    ]
-};
-
-// CHAT, QUIZ, USER FUNCTIONS
-function toggleMute(){isMuted=!isMuted; document.getElementById("muteCircle").innerText = isMuted?"🔇":"🔊";}
-function toggleTheme(){document.body.classList.toggle("light");}
-function toggleSidebar(){document.getElementById("sidebar").classList.toggle("hide");}
-function toggleSettings(){document.querySelectorAll(".circle").forEach(c=>c.classList.toggle("open"));}
-function startListening(){const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;if(!SpeechRecognition){alert("Voice not supported");return;}const recognition = new SpeechRecognition();recognition.lang="en-US";recognition.onresult=(e)=>{document.getElementById("input").value=e.results[0][0].transcript;sendMessage();};recognition.start();}
-function speak(text){if(isMuted) return;if(!window.speechSynthesis)return; window.speechSynthesis.cancel(); const speech=new SpeechSynthesisUtterance(text);speech.lang="en-US";window.speechSynthesis.speak(speech);}
-function loadUser(){let u=localStorage.getItem("username")||"User";document.getElementById("userNameDisplay").innerText="👤 "+u;}
-function greetUser(){let u=localStorage.getItem("username")||"User"; let chat=document.getElementById("chatBox"); let hour=new Date().getHours(); let greeting=""; if(hour<12) greeting="Good Morning ☀️"; else if(hour<17) greeting="Good Afternoon 🌤️"; else if(hour<21) greeting="Good Evening 🌙"; else greeting="Good Night 🌌"; let msg=`${greeting}, ${u}! 👋 I'm your AI Study Companion.`; let b=document.createElement("div"); b.className="message bot"; b.innerText=msg; chat.appendChild(b); speak(msg);}
-function newChat(){document.getElementById("chatBox").innerHTML="";greetUser();}
-function sendMessage(){let input=document.getElementById("input"); let text=input.value.trim(); if(text==="")return; let chat=document.getElementById("chatBox"); let u=document.createElement("div"); u.className="message user"; u.innerText=text; chat.appendChild(u); input.value=""; let reply="🤖 I'm thinking..."; setTimeout(()=>{let b=document.createElement("div");b.className="message bot";b.innerText=reply; chat.appendChild(b); speak(reply); chat.scrollTop=chat.scrollHeight;},500);}
-function logout(){localStorage.clear();window.location.href="login.html";}
-document.getElementById("input").addEventListener("keypress", function(e){if(e.key==="Enter"){sendMessage();}});
-
-function chooseCourse(){const c=document.getElementById("courseSelect").value; localStorage.setItem("course", c);}
-
-// QUIZ
-function startQuiz(){const course=localStorage.getItem("course")||"DBMS"; const q=courseQuizzes[course]; currentQuizIndex=0; score=0; showQuizQuestion(q);}
-function showQuizQuestion(q){const chat=document.getElementById("chatBox"); chat.innerHTML=""; if(currentQuizIndex<q.length){const quest=q[currentQuizIndex]; const div=document.createElement("div"); div.className="message bot"; div.innerText=`🎯 Q${currentQuizIndex+1}: ${quest.question}`; chat.appendChild(div); quest.options.forEach(opt=>{const btn=document.createElement("button");btn.className="quiz-option";btn.innerText=opt; btn.onclick=()=>checkAnswer(opt,q); chat.appendChild(btn);}); chat.scrollTop=chat.scrollHeight;} else {const div=document.createElement("div"); div.className="message bot"; div.innerText=`✅ Quiz finished! Your score: ${score} / ${q.length}`; chat.appendChild(div); const r=document.createElement("button"); r.className="quiz-option"; r.innerText="Restart Quiz"; r.onclick=startQuiz; chat.appendChild(r);}}
-function checkAnswer(s,q){if(s===q[currentQuizIndex].answer) score++; currentQuizIndex++; showQuizQuestion(q);}
-
-// USER POPUP
-function openUserPopup(){
-    const username=localStorage.getItem("username")||"User";
-    document.getElementById("popupName").innerText="Name: "+username;
-    document.getElementById("popupCourse").innerText="Course: "+(localStorage.getItem("course")||"N/A");
-    document.getElementById("popupCgpa").innerText="CGPA: "+(localStorage.getItem("cgpa")||"N/A");
-    document.getElementById("popupSemester").innerText="Semester: "+(localStorage.getItem("semester")||"N/A");
-    document.getElementById("popupGender").innerText="Gender: "+(localStorage.getItem("gender")||"N/A");
-    document.getElementById("userPopup").style.transform="translate(-50%,-50%) scale(1)";
+// ── Authentication Check ─────────────────────────────
+function getToken() {
+    return localStorage.getItem('token') || '';
 }
-function closeUserPopup(){document.getElementById("userPopup").style.transform="translate(-50%,-50%) scale(0)";}
 
-window.onload=()=>{loadUser(); greetUser(); document.getElementById("courseSelect").value=localStorage.getItem("course")||"DBMS";}
+function authHeaders() {
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getToken()}`
+    };
+}
+
+// ── Startup & Initialization ─────────────────────────
+window.addEventListener('DOMContentLoaded', async () => {
+    // Check if user has credentials, if not redirect to profile setup
+    if (!localStorage.getItem('username')) {
+        window.location.href = 'log.html';
+        return;
+    }
+
+    loadUserProfile();
+    greetUser();
+    setupSpeech();
+});
+
+function loadUserProfile() {
+    const name = localStorage.getItem('username') || 'Student';
+    const course = localStorage.getItem('course') || 'B.Tech';
+    const sem = localStorage.getItem('semester') || '4';
+    const cgpa = localStorage.getItem('cgpa') || 'N/A';
+    const target = localStorage.getItem('targetCgpa') || '9.0';
+    const exam = localStorage.getItem('examType') || 'Finals';
+    const subjects = localStorage.getItem('subjects') || 'DBMS, OS, DCCN, COA';
+
+    document.getElementById('userNameDisplay').innerText = name;
+    document.getElementById('userCourseDisplay').innerText = `${course} • Sem ${sem}`;
+    document.getElementById('avatarInitial').innerText = name.charAt(0).toUpperCase();
+
+    document.getElementById('profName').innerText = name;
+    document.getElementById('profCourse').innerText = `${course} (Semester ${sem})`;
+    document.getElementById('profCgpa').innerText = cgpa;
+    document.getElementById('profTarget').innerText = target;
+    document.getElementById('profSem').innerText = sem;
+    document.getElementById('profExam').innerText = exam;
+    document.getElementById('profSubjects').innerText = subjects;
+    document.getElementById('profileModalAvatar').innerText = name.charAt(0).toUpperCase();
+
+    // Populate active course dropdown with student's subjects
+    const subArray = subjects.split(',').map(s => s.trim()).filter(Boolean);
+    const select = document.getElementById('courseSelect');
+    if (subArray.length > 0) {
+        select.innerHTML = '';
+        subArray.forEach(sub => {
+            const opt = document.createElement('option');
+            opt.value = sub;
+            opt.innerText = sub;
+            select.appendChild(opt);
+        });
+    }
+
+    const currentCourse = select.value || 'DBMS';
+    document.getElementById('activeTopicHeader').innerText = `${currentCourse} AI Tutor`;
+}
+
+function changeCourse() {
+    const c = document.getElementById('courseSelect').value;
+    document.getElementById('activeTopicHeader').innerText = `${c} AI Tutor`;
+    addBotMessage(`Switched active study focus to **${c}**. Ask me any conceptual questions, or click **Practice Quiz** to test your knowledge!`);
+}
+
+// ── UI Controls ──────────────────────────────────────
+function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('hide');
+}
+
+function toggleTheme() {
+    document.body.classList.toggle('light');
+    const isLight = document.body.classList.contains('light');
+    document.getElementById('themeBtn').innerText = isLight ? '☀️' : '🌙';
+}
+
+function toggleMute() {
+    isMuted = !isMuted;
+    document.getElementById('muteBtn').innerText = isMuted ? '🔇' : '🔊';
+    if (isMuted && window.speechSynthesis) window.speechSynthesis.cancel();
+}
+
+function speak(text) {
+    if (isMuted || !window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    const clean = text.replace(/[*_#`]/g, '');
+    const utter = new SpeechSynthesisUtterance(clean);
+    utter.rate = 1.05;
+    window.speechSynthesis.speak(utter);
+}
+
+function setupSpeech() {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+        recognition = new SpeechRecognition();
+        recognition.lang = 'en-US';
+        recognition.continuous = false;
+        recognition.onresult = (e) => {
+            const transcript = e.results[0][0].transcript;
+            document.getElementById('userInput').value = transcript;
+            sendMessage();
+        };
+        recognition.onend = () => {
+            isListening = false;
+            document.getElementById('micBtn').classList.remove('listening');
+        };
+    }
+}
+
+function toggleVoiceInput() {
+    if (!recognition) {
+        alert("Speech recognition is not supported in this browser. Please use Chrome or Edge.");
+        return;
+    }
+    if (isListening) {
+        recognition.stop();
+    } else {
+        recognition.start();
+        isListening = true;
+        document.getElementById('micBtn').classList.add('listening');
+    }
+}
+
+// ── Chat Functions ───────────────────────────────────
+function greetUser() {
+    const name = localStorage.getItem('username') || 'Student';
+    const hour = new Date().getHours();
+    const greeting = hour < 12 ? 'Good morning ☀️' : hour < 17 ? 'Good afternoon 🌤️' : 'Good evening 🌙';
+    addBotMessage(`${greeting}, **${name}**! 👋 I am your AI Study Companion.\n\nI can explain concepts, quiz you on your subjects, synthesize your uploaded notes, and track your weak areas. What shall we master today?`);
+}
+
+function newChat() {
+    currentSessionId = null;
+    document.getElementById('chatBox').innerHTML = '';
+    greetUser();
+}
+
+function handleInputKey(e) {
+    if (e.key === 'Enter') sendMessage();
+}
+
+function addUserMessage(text) {
+    const chat = document.getElementById('chatBox');
+    const wrap = document.createElement('div');
+    wrap.className = 'message-wrapper user';
+    wrap.innerHTML = `
+        <div class="msg-avatar">👤</div>
+        <div class="message-bubble">${escapeHtml(text)}</div>
+    `;
+    chat.appendChild(wrap);
+    chat.scrollTop = chat.scrollHeight;
+}
+
+function addBotMessage(text, sources = []) {
+    const chat = document.getElementById('chatBox');
+    const wrap = document.createElement('div');
+    wrap.className = 'message-wrapper bot';
+
+    let citationsHtml = '';
+    if (sources && sources.length > 0) {
+        citationsHtml = sources.map(s => `<div class="citations-tag">📄 ${s.filename || 'Notes'} (${s.subject || 'Syllabus'})</div>`).join(' ');
+    }
+
+    wrap.innerHTML = `
+        <div class="msg-avatar">🧠</div>
+        <div class="message-bubble">
+            ${formatMarkdown(text)}
+            ${citationsHtml}
+        </div>
+    `;
+    chat.appendChild(wrap);
+    chat.scrollTop = chat.scrollHeight;
+    speak(text);
+}
+
+function showTypingIndicator() {
+    const chat = document.getElementById('chatBox');
+    const ind = document.createElement('div');
+    ind.id = 'activeTyping';
+    ind.className = 'typing-indicator';
+    ind.innerHTML = `
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+    `;
+    chat.appendChild(ind);
+    chat.scrollTop = chat.scrollHeight;
+}
+
+function hideTypingIndicator() {
+    const ind = document.getElementById('activeTyping');
+    if (ind) ind.remove();
+}
+
+async function sendMessage() {
+    const input = document.getElementById('userInput');
+    const message = input.value.trim();
+    if (!message) return;
+
+    addUserMessage(message);
+    input.value = '';
+
+    const course = document.getElementById('courseSelect').value || 'DBMS';
+    showTypingIndicator();
+
+    try {
+        const res = await fetch('/api/chat', {
+            method: 'POST',
+            headers: authHeaders(),
+            body: JSON.stringify({
+                message,
+                topic: course,
+                sessionId: currentSessionId
+            })
+        });
+
+        hideTypingIndicator();
+
+        if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            addBotMessage(`⚠️ Unable to get AI response: ${err.error || res.statusText}. Please verify the backend is running.`);
+            return;
+        }
+
+        const data = await res.json();
+        currentSessionId = data.sessionId;
+        addBotMessage(data.reply, data.sources);
+
+    } catch (err) {
+        hideTypingIndicator();
+        addBotMessage(`⚠️ Connection error: ${err.message}. Make sure the EduMind backend server is active.`);
+    }
+}
+
+// ── AI Quiz Experience ───────────────────────────────
+async function startAIQuiz() {
+    const course = document.getElementById('courseSelect').value || 'DBMS';
+    addBotMessage(`Generating a personalized 5-question quiz for **${course}**... 🎯`);
+    showTypingIndicator();
+
+    try {
+        const res = await fetch('/api/quiz/generate', {
+            method: 'POST',
+            headers: authHeaders(),
+            body: JSON.stringify({
+                subject: course,
+                difficulty: 'medium',
+                count: 5
+            })
+        });
+
+        hideTypingIndicator();
+
+        if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            addBotMessage(`Could not generate quiz: ${err.error || res.statusText}`);
+            return;
+        }
+
+        const data = await res.json();
+        currentQuiz = {
+            questions: data.questions,
+            _id: data.quizId,
+            subject: course
+        };
+        currentQuizIndex = 0;
+        userQuizScore = 0;
+
+        renderQuizQuestion();
+
+    } catch (err) {
+        hideTypingIndicator();
+        addBotMessage(`Quiz generation failed: ${err.message}`);
+    }
+}
+
+function renderQuizQuestion() {
+    if (!currentQuiz || !currentQuiz.questions || currentQuizIndex >= currentQuiz.questions.length) {
+        finishQuiz();
+        return;
+    }
+
+    const q = currentQuiz.questions[currentQuizIndex];
+    const chat = document.getElementById('chatBox');
+    const card = document.createElement('div');
+    card.className = 'quiz-card';
+    card.id = `quizCard_${currentQuizIndex}`;
+
+    card.innerHTML = `
+        <div class="quiz-header">
+            <span>🎯 Question ${currentQuizIndex + 1} of ${currentQuiz.questions.length}</span>
+            <span>Subject: <strong>${currentQuiz.subject}</strong></span>
+        </div>
+        <div class="quiz-question">${escapeHtml(q.q || q.question)}</div>
+        <div class="quiz-options">
+            ${(q.options || []).map((opt, i) => `
+                <button class="quiz-opt-btn" onclick="submitAnswer(${i})">
+                    <strong>${String.fromCharCode(65 + i)}.</strong> ${escapeHtml(opt)}
+                </button>
+            `).join('')}
+        </div>
+        <div id="quizExp_${currentQuizIndex}" class="quiz-explanation" style="display: none;"></div>
+    `;
+
+    chat.appendChild(card);
+    chat.scrollTop = chat.scrollHeight;
+    speak(q.q || q.question);
+}
+
+async function submitAnswer(selectedIdx) {
+    const q = currentQuiz.questions[currentQuizIndex];
+    const card = document.getElementById(`quizCard_${currentQuizIndex}`);
+    const btns = card.querySelectorAll('.quiz-opt-btn');
+    const expBox = document.getElementById(`quizExp_${currentQuizIndex}`);
+
+    btns.forEach(b => b.disabled = true);
+
+    const isCorrect = (selectedIdx === q.answer);
+    if (isCorrect) {
+        userQuizScore++;
+        btns[selectedIdx].classList.add('correct');
+    } else {
+        btns[selectedIdx].classList.add('incorrect');
+        if (btns[q.answer]) btns[q.answer].classList.add('correct');
+    }
+
+    expBox.innerHTML = `<strong>${isCorrect ? '✅ Correct!' : '❌ Incorrect.'}</strong> ${escapeHtml(q.explanation || '')}`;
+    expBox.style.display = 'block';
+
+    // Submit single answer to quiz session if present
+    if (!currentQuiz.userAnswers) currentQuiz.userAnswers = [];
+    currentQuiz.userAnswers.push({
+        questionIndex: currentQuizIndex,
+        selectedOption: selectedIdx
+    });
+
+    currentQuizIndex++;
+
+    setTimeout(() => {
+        if (currentQuizIndex < currentQuiz.questions.length) {
+            renderQuizQuestion();
+        } else {
+            finishQuiz();
+        }
+    }, 1800);
+}
+
+async function finishQuiz() {
+    const total = currentQuiz.questions.length;
+    const pct = Math.round((userQuizScore / total) * 100);
+
+    addBotMessage(`🎉 **Quiz Complete!** You scored **${userQuizScore} / ${total}** (${pct}%).\n\nKeep active to build your learning streak!`);
+
+    // Submit final answers to backend
+    if (currentQuiz._id) {
+        fetch(`/api/quiz/${currentQuiz._id}/submit`, {
+            method: 'POST',
+            headers: authHeaders(),
+            body: JSON.stringify({ answers: currentQuiz.userAnswers })
+        }).catch(err => console.warn('Submit quiz error:', err));
+    }
+
+    // Update streak
+    fetch('/api/progress/streak', { method: 'PATCH', headers: authHeaders() }).catch(() => {});
+}
+
+// ── Modals & Feature Implementations ─────────────────
+function openModal(id) {
+    document.getElementById(id).classList.add('open');
+}
+
+function closeModal(id) {
+    document.getElementById(id).classList.remove('open');
+}
+
+async function openDashboard() {
+    openModal('dashboardModal');
+    try {
+        const res = await fetch('/api/progress', { headers: authHeaders() });
+        if (res.ok) {
+            const data = await res.json();
+            document.getElementById('statScore').innerText = `${data.overallAvg || 0}%`;
+            document.getElementById('statStreak').innerText = `${data.streak || 1} 🔥`;
+            document.getElementById('statQuizzes').innerText = data.quizCount || 0;
+            document.getElementById('statExamDays').innerText = data.daysToExam !== null ? `${data.daysToExam}d` : '14d';
+        }
+
+        const recRes = await fetch('/api/plan/recommendations', { method: 'POST', headers: authHeaders() });
+        if (recRes.ok) {
+            const recData = await recRes.json();
+            const list = document.getElementById('recommendationsList');
+            if (recData.recommendations && recData.recommendations.length > 0) {
+                list.innerHTML = recData.recommendations.map(r => `
+                    <div style="margin-bottom: 8px;">${r.icon || '📌'} ${escapeHtml(r.text)}</div>
+                `).join('');
+            } else {
+                list.innerHTML = "💡 Complete your first practice quiz to receive tailored AI recommendations!";
+            }
+        }
+    } catch (err) {
+        console.warn('Dashboard fetch error:', err);
+    }
+}
+
+async function openStudyPlan() {
+    openModal('studyPlanModal');
+    const content = document.getElementById('planContent');
+    content.innerHTML = '<div style="text-align: center; padding: 20px;">🤖 Generating smart 7-day schedule with AI...</div>';
+
+    try {
+        const res = await fetch('/api/plan/generate', { method: 'POST', headers: authHeaders() });
+        if (!res.ok) throw new Error('Could not generate plan');
+        const data = await res.json();
+        const days = data.plan.days || [];
+
+        content.innerHTML = days.map(d => `
+            <div class="plan-day">
+                <div class="plan-day-header">
+                    <span>${d.day} — ${d.focus}</span>
+                </div>
+                ${(d.tasks || []).map(t => `
+                    <div class="plan-task">
+                        <input type="checkbox">
+                        <span>${escapeHtml(t.text)} (${t.duration || '30m'})</span>
+                    </div>
+                `).join('')}
+                <div style="font-size: 11px; color: var(--text-secondary); margin-top: 6px;">💡 Tip: ${escapeHtml(d.tip || '')}</div>
+            </div>
+        `).join('');
+
+    } catch (err) {
+        content.innerHTML = `<div style="color: #ef4444;">Error generating plan: ${err.message}</div>`;
+    }
+}
+
+function openUploadModal() {
+    openModal('uploadModal');
+}
+
+async function handleFileUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const course = document.getElementById('courseSelect').value || 'DBMS';
+    const status = document.getElementById('uploadStatus');
+    status.style.display = 'block';
+    status.innerHTML = `⏳ Uploading and indexing <strong>${escapeHtml(file.name)}</strong>...`;
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('subject', course);
+
+    try {
+        const res = await fetch('/api/upload', {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${getToken()}` },
+            body: formData
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+            status.innerHTML = `✅ Successfully indexed <strong>${data.filename}</strong> (${data.chunks} vector chunks)!`;
+            addBotMessage(`📥 I have processed your notes: **${file.name}**. I will now use them to cite answers and formulate custom quiz questions!`);
+            setTimeout(() => closeModal('uploadModal'), 1500);
+        } else {
+            status.innerHTML = `❌ Upload failed: ${data.error || 'Server error'}`;
+        }
+    } catch (err) {
+        status.innerHTML = `❌ Error: ${err.message}`;
+    }
+}
+
+async function openMistakesModal() {
+    openModal('mistakesModal');
+    const list = document.getElementById('mistakesList');
+    list.innerHTML = 'Loading mistake log...';
+
+    try {
+        const res = await fetch('/api/mistakes', { headers: authHeaders() });
+        const data = await res.json();
+        if (!data.mistakes || data.mistakes.length === 0) {
+            list.innerHTML = "<p style='color: var(--text-secondary); font-size: 13px;'>No mistakes logged yet! Great job. Take practice quizzes to track errors.</p>";
+            return;
+        }
+
+        list.innerHTML = data.mistakes.map((m, i) => `
+            <div style="padding: 10px; background: rgba(255,255,255,0.03); border-radius: 8px; margin-bottom: 8px; font-size: 13px;">
+                <strong>${i + 1}. [${m.subject}]</strong> ${escapeHtml(m.question)}
+                <div style="color: #ef4444; margin-top: 4px;">Your answer: ${escapeHtml(m.selected || m.userAnswer || 'N/A')}</div>
+                <div style="color: #22c55e;">Correct: ${escapeHtml(m.correct)}</div>
+            </div>
+        `).join('');
+    } catch (err) {
+        list.innerHTML = `Error loading mistakes: ${err.message}`;
+    }
+}
+
+async function reviseMistakesWithAI() {
+    closeModal('mistakesModal');
+    addBotMessage("Analyzing your past quiz mistakes to provide a comprehensive explanation...");
+    showTypingIndicator();
+
+    try {
+        const res = await fetch('/api/mistakes/revise', { method: 'POST', headers: authHeaders(), body: JSON.stringify({}) });
+        hideTypingIndicator();
+        const data = await res.json();
+        addBotMessage(data.reply);
+    } catch (err) {
+        hideTypingIndicator();
+        addBotMessage(`Could not revise mistakes: ${err.message}`);
+    }
+}
+
+function openProfileModal() {
+    openModal('profileModal');
+}
+
+function logout() {
+    localStorage.clear();
+    window.location.href = 'log.html';
+}
+
+// ── Utility Formatting Helpers ───────────────────────
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function formatMarkdown(text) {
+    if (!text) return '';
+    let html = escapeHtml(text);
+    // Code blocks
+    html = html.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
+    // Bold
+    html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    // Bullet points
+    html = html.replace(/^\s*[-•]\s+(.*)$/gm, '<p>• $1</p>');
+    // Paragraph breaks
+    html = html.replace(/\n\n/g, '<p></p>');
+    return html;
+}
 </script>
+
 </body>
 </html>

@@ -17,24 +17,34 @@ import planRoutes     from './routes/plan.js';
 import progressRoutes from './routes/progress.js';
 import mistakeRoutes  from './routes/mistakes.js';
 
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const rootDir = path.resolve(__dirname, '..');
+
 const app = express();
 
 // ── Security & Middleware ────────────────────────────
-app.use(helmet());
-app.use(cors({ origin: config.CORS_ORIGIN, credentials: true }));
+app.use(helmet({ contentSecurityPolicy: false }));
+app.use(cors({ origin: true, credentials: true }));
 app.use(morgan('dev'));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
+// Serve frontend static files
+app.use(express.static(rootDir));
+
 // ── Rate Limiting ────────────────────────────────────
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100,
+  max: 200,
   message: { error: 'Too many requests, please slow down.' }
 });
 const aiLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute
-  max: 20,
+  max: 60,
   message: { error: 'AI rate limit hit, wait a moment.' }
 });
 
@@ -45,6 +55,17 @@ app.use('/api/quiz', aiLimiter);
 // ── Health Check ─────────────────────────────────────
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// ── Frontend Navigation Routes ───────────────────────
+app.get('/', (req, res) => {
+  res.sendFile(path.join(rootDir, 'final.html'));
+});
+app.get('/login', (req, res) => {
+  res.sendFile(path.join(rootDir, 'log.html'));
+});
+app.get('/login.html', (req, res) => {
+  res.sendFile(path.join(rootDir, 'log.html'));
 });
 
 // ── Routes ────────────────────────────────────────────
@@ -75,17 +96,17 @@ app.use((err, req, res, next) => {
 // ── Boot ──────────────────────────────────────────────
 async function start() {
   try {
+    const server = app.listen(config.PORT, () => {
+      console.log(`\n🧠 EduMind Pro Server running at: http://localhost:${config.PORT}`);
+      console.log(`   ENV: ${config.NODE_ENV}`);
+    });
+
     await connectDB();
     await initVectorStore();
-    app.listen(config.PORT, () => {
-      console.log(`\n🧠 EduMind Backend running on http://localhost:${config.PORT}`);
-      console.log(`   ENV: ${config.NODE_ENV}`);
-      console.log(`   DB:  MongoDB connected`);
-      console.log(`   VDB: ChromaDB connected\n`);
-    });
+    console.log(`   DB:  MongoDB connected`);
+    console.log(`   VDB: Vector Store ready\n`);
   } catch (err) {
-    console.error('Failed to start server:', err);
-    process.exit(1);
+    console.error('Database initialization warning:', err.message);
   }
 }
 

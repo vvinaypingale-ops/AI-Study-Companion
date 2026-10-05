@@ -5,8 +5,31 @@
  */
 import { config } from '../config/env.js';
 
+function generateFallbackEmbedding(text, dim = 384) {
+  const vec = new Array(dim).fill(0);
+  const words = (text || '').toLowerCase().match(/\w+/g) || [];
+  for (let i = 0; i < words.length; i++) {
+    const w = words[i];
+    let h = 0;
+    for (let c = 0; c < w.length; c++) {
+      h = (h << 5) - h + w.charCodeAt(c);
+      h |= 0;
+    }
+    const idx = Math.abs(h) % dim;
+    vec[idx] += 1;
+  }
+  let norm = 0;
+  for (let i = 0; i < dim; i++) norm += vec[i] * vec[i];
+  norm = Math.sqrt(norm) || 1;
+  return vec.map(v => v / norm);
+}
+
 // ── Gemini Embeddings ─────────────────────────────────
 async function embedGemini(texts) {
+  if (!config.GEMINI_API_KEY) {
+    return texts.map(t => generateFallbackEmbedding(t));
+  }
+
   const url = `https://generativelanguage.googleapis.com/v1beta/models/text-embedding-004:batchEmbedContents?key=${config.GEMINI_API_KEY}`;
 
   const requests = texts.map(text => ({
@@ -14,18 +37,24 @@ async function embedGemini(texts) {
     content: { parts: [{ text }] },
   }));
 
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ requests }),
-  });
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ requests }),
+    });
 
-  if (!res.ok) {
-    const err = await res.json();
-    throw new Error(`Gemini embed error: ${err.error?.message}`);
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      console.warn(`⚠️ Gemini embedding failed (${err.error?.message || res.statusText}). Using local embedding fallback.`);
+      return texts.map(t => generateFallbackEmbedding(t));
+    }
+    const data = await res.json();
+    return data.embeddings.map(e => e.values);
+  } catch (err) {
+    console.warn(`⚠️ Gemini embedding error: ${err.message}. Using local embedding fallback.`);
+    return texts.map(t => generateFallbackEmbedding(t));
   }
-  const data = await res.json();
-  return data.embeddings.map(e => e.values);
 }
 
 // ── OpenAI Embeddings ─────────────────────────────────
